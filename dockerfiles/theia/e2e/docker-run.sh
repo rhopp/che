@@ -6,11 +6,7 @@
 #
 # SPDX-License-Identifier: EPL-2.0
 
-base_dir=$(cd "$(dirname "$0")"; pwd)
-. "${base_dir}"/../build.include
-
-init --name:theia "$@"
-build
-if ! skip_tests; then
-  sh "${base_dir}"/e2e/build.sh "$@"
-fi
+cd /home/theia/ && bash start.sh&
+sleep 5s
+cd /home/cypress && ./node_modules/.bin/cypress run
+ 
