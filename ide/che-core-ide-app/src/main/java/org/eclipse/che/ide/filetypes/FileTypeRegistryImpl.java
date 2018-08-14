@@ -74,9 +74,9 @@ public class FileTypeRegistryImpl implements FileTypeRegistry {
     String fileName = file.getName();
     String fileExtension = getFileExtension(fileName);
 
-    FileType fileType = getFileTypeByExtension(fileExtension);
+    FileType fileType = getFileTypeByFileName(fileName);
     if (fileType == unknownFileType) {
-      fileType = getFileTypeByFileName(fileName);
+      fileType = getFileTypeByExtension(fileExtension);
     }
     return fileType != null ? fileType : unknownFileType;
   }

@@ -31,9 +31,10 @@ public interface FileTypeRegistry {
      * Allows to get {@link FileType} by extension and name pattern.
      *
      * <p>Returns:
-     * <li>merged File Type if the File Type Registry contains type with such extension
-     * <li>newly created and registered File Type if the File Type Registry does not contain type
-     *     with such extension
+     * <li>merged File Type if the File Type Registry contains type which match given {@code
+     *     extension} and {@code namePattern}
+     * <li>newly created and registered File Type if the File Type Registry does not contain
+     *     corresponding type to merge
      *
      * @param image associated with the File Type image, optional parameter: default image will be
      *     used when {@code image} is not provided
