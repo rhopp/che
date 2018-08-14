@@ -19,6 +19,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.name.Named;
+import java.util.Optional;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
 import org.eclipse.che.commons.annotation.Nullable;
@@ -51,9 +52,22 @@ public class FileTypeProviderImpl implements FileTypeProvider {
 
   public FileType get(
       @Nullable SVGResource image, @NotNull String extension, @Nullable String namePattern) {
+    if (isNullOrEmpty(namePattern)) {
+      return getByExtension(image, extension);
+    }
+
     checkArgument(!isNullOrEmpty(extension), "Can not register File Type without extension");
 
-    FileType fileType = getByExtension(image, extension);
+    Optional<FileType> fileTypeOptional =
+        fileTypeRegistry
+            .getFileTypes()
+            .stream()
+            .filter(candidate -> extension.equals(candidate.getExtension()))
+            .filter(candidate -> canBeMergedByNamePattern(namePattern, candidate))
+            .findAny();
+
+    FileType fileType =
+        fileTypeOptional.orElseGet(() -> registerNewFileType(image, extension, null));
 
     fileType.addNamePattern(namePattern);
 

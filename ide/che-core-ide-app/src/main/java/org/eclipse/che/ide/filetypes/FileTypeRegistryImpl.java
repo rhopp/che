@@ -12,6 +12,7 @@
 package org.eclipse.che.ide.filetypes;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static java.util.stream.Collectors.toSet;
 import static org.eclipse.che.ide.util.NameUtils.getFileExtension;
 
 import com.google.gwt.regexp.shared.RegExp;
@@ -50,7 +51,7 @@ public class FileTypeRegistryImpl implements FileTypeRegistry {
 
     String extension = candidate.getExtension();
     FileType duplicate = getFileTypeByExtension(extension);
-    if (duplicate != unknownFileType && !duplicate.equals(candidate)) {
+    if (duplicate != unknownFileType && duplicate != candidate) {
       throw new IllegalStateException(
           "File Type with extension " + extension + " is already registered");
     }
@@ -86,9 +87,25 @@ public class FileTypeRegistryImpl implements FileTypeRegistry {
       return unknownFileType;
     }
 
+    Set<FileType> typesByExtension =
+        fileTypes.stream().filter(type -> extension.equals(type.getExtension())).collect(toSet());
+    if (typesByExtension.isEmpty()) {
+      return unknownFileType;
+    }
+
+    String nameToTest = '.' + extension;
     Optional<FileType> fileType =
-        fileTypes.stream().filter(type -> extension.equals(type.getExtension())).findFirst();
-    return fileType.orElse(unknownFileType);
+        typesByExtension
+            .stream()
+            .filter(type -> doesFileNameMatchType(nameToTest, type))
+            .findFirst();
+    if (fileType.isPresent()) {
+      return fileType.get();
+    }
+
+    fileType =
+        typesByExtension.stream().filter(type -> type.getNamePatterns().isEmpty()).findFirst();
+    return fileType.orElseGet(() -> typesByExtension.iterator().next());
   }
 
   @Override
@@ -97,9 +114,28 @@ public class FileTypeRegistryImpl implements FileTypeRegistry {
       return unknownFileType;
     }
 
+    Set<FileType> typesByNamePattern =
+        fileTypes.stream().filter(type -> doesFileNameMatchType(name, type)).collect(toSet());
+
+    if (typesByNamePattern.isEmpty()) {
+      return unknownFileType;
+    }
+
+    if (typesByNamePattern.size() == 1) {
+      return typesByNamePattern.iterator().next();
+    }
+
+    String fileExtension = getFileExtension(name);
+    if (isNullOrEmpty(fileExtension)) {
+      return typesByNamePattern.iterator().next();
+    }
+
     Optional<FileType> fileType =
-        fileTypes.stream().filter(type -> doesFileNameMatchType(name, type)).findFirst();
-    return fileType.orElse(unknownFileType);
+        typesByNamePattern
+            .stream()
+            .filter(type -> fileExtension.equals(type.getExtension()))
+            .findFirst();
+    return fileType.orElseGet(() -> typesByNamePattern.iterator().next());
   }
 
   private boolean doesFileNameMatchType(String nameToTest, FileType fileType) {
