@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npm run lint && npm run tsc && mocha --opts mocha.opts",
+    "test": "npm run lint && npm run tsc && mocha --opts mocha-happy-path.opts",
     "test-happy-path": "npm run lint && npm run tsc && mocha --opts mocha-happy-path.opts",
     "lint": "tslint --fix -p .",
     "tsc": "tsc -p ."

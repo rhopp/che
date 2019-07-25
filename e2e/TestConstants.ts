@@ -92,6 +92,11 @@ export const TestConstants = {
     /**
      * Password used to log in MultiUser Che
      */
-    TS_SELENIUM_PASSWORD: process.env.TS_SELENIUM_PASSWORD || ''
+    TS_SELENIUM_PASSWORD: process.env.TS_SELENIUM_PASSWORD || '',
+
+    /**
+     * Log into CHE in MultiUser mode, "false" by default.
+     */
+    TS_SELENIUM_MULTIUSER: process.env.TS_SELENIUM_MULTIUSER === 'true'
 
 };

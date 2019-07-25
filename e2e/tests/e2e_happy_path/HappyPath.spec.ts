@@ -10,7 +10,7 @@
 
 import { e2eContainer } from '../../inversify.config';
 import { DriverHelper } from '../../utils/DriverHelper';
-import { CLASSES } from '../../inversify.types';
+import { TYPES, CLASSES } from '../../inversify.types';
 import { Ide, RightToolbarButton } from '../../pageobjects/ide/Ide';
 import { ProjectTree } from '../../pageobjects/ide/ProjectTree';
 import { TopMenu } from '../../pageobjects/ide/TopMenu';
@@ -23,6 +23,7 @@ import { By, Key, error } from 'selenium-webdriver';
 import { Terminal } from '../../pageobjects/ide/Terminal';
 import { DebugView } from '../../pageobjects/ide/DebugView';
 import { WarningDialog } from '../../pageobjects/ide/WarningDialog';
+import { ILoginPage } from '../../pageobjects/login/ILoginPage';
 
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
@@ -35,6 +36,7 @@ const rightToolbar: RightToolbar = e2eContainer.get(CLASSES.RightToolbar);
 const terminal: Terminal = e2eContainer.get(CLASSES.Terminal);
 const debugView: DebugView = e2eContainer.get(CLASSES.DebugView);
 const warningDialog: WarningDialog = e2eContainer.get(CLASSES.WarningDialog);
+const loginPage: ILoginPage = e2eContainer.get<ILoginPage>(TYPES.LoginPage);
 
 const projectName: string = 'petclinic';
 const namespace: string = TestConstants.TS_SELENIUM_USERNAME;
@@ -61,6 +63,7 @@ const SpringAppLocators = {
 suite('Validation of workspace start', async () => {
     test('Open workspace', async () => {
         await driverHelper.navigateTo(workspaceUrl);
+        await loginPage.login();
     });
 
     test('Wait workspace running state', async () => {
