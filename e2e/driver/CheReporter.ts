@@ -45,6 +45,7 @@ class CheReporter extends mocha.reporters.Spec {
       TS_SELENIUM_HAPPY_PATH_WORKSPACE_NAME: ${TestConstants.TS_SELENIUM_HAPPY_PATH_WORKSPACE_NAME}
       TS_SELENIUM_USERNAME: ${TestConstants.TS_SELENIUM_USERNAME}
       TS_SELENIUM_PASSWORD: ${TestConstants.TS_SELENIUM_PASSWORD}
+      TS_SELENIUM_MULTIUSER: ${TestConstants.TS_SELENIUM_MULTIUSER}
 
 ########################################################
       `;

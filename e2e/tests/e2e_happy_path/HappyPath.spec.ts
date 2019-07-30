@@ -75,6 +75,46 @@ suite('Validation of workspace start', async () => {
         await projectTree.waitProjectImported(projectName, 'src');
         await projectTree.expandItem(`/${projectName}`);
     });
+
+    test('Build application', async () => {
+        await topMenu.selectOption('Terminal', 'Run Task...');
+        await quickOpenContainer.clickOnContainerItem('che: build-file-output');
+
+        try {
+            await projectTree.expandPathAndOpenFile(projectName, 'build-output.txt');
+        } catch (err) {
+            if (err instanceof error.TimeoutError) {
+                //try once again :-(
+                await projectTree.expandPathAndOpenFile(projectName, 'build-output.txt');
+            }
+        }
+        await editor.followAndWaitForText('build-output.txt', '[INFO] BUILD SUCCESS', 180000, 5000);
+    });
+
+    test('Run application', async () => {
+        await topMenu.selectOption('Terminal', 'Run Task...');
+        await quickOpenContainer.clickOnContainerItem('che: run');
+
+        await ide.waitNotificationAndConfirm('A new process is now listening on port 8080', 120000);
+        await ide.waitNotificationAndOpenLink('Redirect is now enabled on port 8080', 120000);
+    });
+
+    test('Check the running application', async () => {
+        await previewWidget.waitContentAvailable(SpringAppLocators.springTitleLocator, 60000, 10000);
+    });
+
+    test('Close preview widget', async () => {
+        await rightToolbar.clickOnToolIcon('Preview');
+        await previewWidget.waitPreviewWidgetAbsence();
+    });
+
+    test('Close the terminal running tasks', async () => {
+        await terminal.closeTerminalTab('build-file-output');
+        await terminal.rejectTerminalProcess('run');
+        await terminal.closeTerminalTab('run');
+
+        await warningDialog.waitAndCloseIfAppear();
+    });
 });
 
 suite('Language server validation', async () => {
