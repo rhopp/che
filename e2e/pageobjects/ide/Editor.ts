@@ -113,6 +113,7 @@ export class Editor {
     }
 
     async waitEditorOpened(editorTabTitle: string, timeout: number = TestConstants.TS_SELENIUM_DEFAULT_TIMEOUT) {
+        console.log("Waiting for editor "+editorTabTitle+" to be opened");
         const firstEditorLineLocator: By = By.xpath(this.getEditorLineXpathLocator(1));
 
         await this.driverHelper.waitPresence(this.getEditorBodyLocator(editorTabTitle), timeout);
@@ -160,8 +161,11 @@ export class Editor {
         timeout: number = TestConstants.TS_SELENIUM_DEFAULT_TIMEOUT,
         polling: number = TestConstants.TS_SELENIUM_DEFAULT_POLLING) {
 
+        console.log("FollowAndWaitForText");
+
         await this.selectTab(editorTabTitle);
         await this.driverHelper.getDriver().wait(async () => {
+            console.log("Clicking CTRL+END");
             await this.performKeyCombination(editorTabTitle, Key.chord(Key.CONTROL, Key.END));
             const editorText: string = await this.getEditorVisibleText(editorTabTitle);
 

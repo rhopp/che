@@ -81,10 +81,12 @@ suite('Validation of workspace start', async () => {
         await quickOpenContainer.clickOnContainerItem('che: build-file-output');
 
         try {
+            console.log("Expanding and opening file");
             await projectTree.expandPathAndOpenFile(projectName, 'build-output.txt');
         } catch (err) {
             if (err instanceof error.TimeoutError) {
                 //try once again :-(
+                console.log("Expanding and opening file again")
                 await projectTree.expandPathAndOpenFile(projectName, 'build-output.txt');
             }
         }

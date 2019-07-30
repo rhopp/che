@@ -73,6 +73,7 @@ export class ProjectTree {
     }
 
     async clickOnItem(itemPath: string, timeout: number = TestConstants.TS_SELENIUM_DEFAULT_TIMEOUT) {
+        console.log("Clicking on item with selector: "+By.css(this.getItemCss(itemPath));
         await this.driverHelper.waitAndClick(By.css(this.getItemCss(itemPath)), timeout);
         await this.waitItemSelected(itemPath, timeout);
     }
