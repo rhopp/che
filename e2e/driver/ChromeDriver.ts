@@ -7,7 +7,6 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
-import 'chromedriver';
 import 'reflect-metadata';
 import { injectable } from 'inversify';
 import { ThenableWebDriver, Builder } from 'selenium-webdriver';
@@ -33,6 +32,7 @@ export class ChromeDriver implements IDriver {
         this.driver = new Builder()
             .forBrowser('chrome')
             .setChromeOptions(options)
+            .usingServer('http://localhost:9515')
             .build();
 
         this.driver

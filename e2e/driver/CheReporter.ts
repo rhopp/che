@@ -26,6 +26,7 @@ let deleteScreencast: boolean = true;
 
 class CheReporter extends mocha.reporters.Spec {
   constructor(runner: mocha.Runner, options: mocha.MochaOptions) {
+    console.log('Test!');
     super(runner, options);
 
     runner.on('start', async (test: mocha.Test) => {
