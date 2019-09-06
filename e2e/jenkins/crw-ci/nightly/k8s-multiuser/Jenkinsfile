@@ -6,26 +6,26 @@ pipeline {
     stages{
         stage("Prepare"){
             parallel {
-                stage("Start minikube"){
-                    steps{
-                        sh """
-                            set -x
-                            echo Test!
-                            sudo setenforce 0
-                            sudo systemctl stop firewalld
-                            export MINIKUBE_WANTUPDATENOTIFICATION=false
-                            export MINIKUBE_WANTREPORTERRORPROMPT=false
-                            export MINIKUBE_HOME=\${HOME}
-                            export CHANGE_MINIKUBE_NONE_USER=true
-                            export KUBECONFIG=\${HOME}/.kube/config
-                            export DOCKER_CONFIG=\${HOME}/.docker
-                            mkdir -p \${HOME}/.kube \${HOME}/.minikube
-                            touch \${KUBECONFIG}
-                            sudo -E /usr/local/bin/minikube start --vm-driver=none --cups 4 --memory 12288 --logtostderr
-                            set +x
-                        """
-                    }
-                }
+                // stage("Start minikube") {
+                //     steps{
+                //         sh """
+                //             set -x
+                //             echo Test!
+                //             sudo setenforce 0
+                //             sudo systemctl stop firewalld
+                //             export MINIKUBE_WANTUPDATENOTIFICATION=false
+                //             export MINIKUBE_WANTREPORTERRORPROMPT=false
+                //             export MINIKUBE_HOME=\${HOME}
+                //             export CHANGE_MINIKUBE_NONE_USER=true
+                //             export KUBECONFIG=\${HOME}/.kube/config
+                //             export DOCKER_CONFIG=\${HOME}/.docker
+                //             mkdir -p \${HOME}/.kube \${HOME}/.minikube
+                //             touch \${KUBECONFIG}
+                //             sudo -E /usr/local/bin/minikube start --vm-driver=none --cups 4 --memory 12288 --logtostderr
+                //             set +x
+                //         """
+                //     }
+                // }
 
                 stage('Download test image') { // for display purposes
                     steps{
