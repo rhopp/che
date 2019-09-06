@@ -1,0 +1,183 @@
+pipeline {
+    environment{
+        CREDENTIALS_JSON='{"type":"password","value":"\${TEST_USERNAME}","temporary":false}'
+    }
+    agent {label 'minikube-rhel7-16gb'}
+    stages{
+        stage("Prepare"){
+            parallel {
+                stage("Start minikube"){
+                    steps{
+                        sh """
+                            sudo setenforce 0
+                            sudo systemctl stop firewalld
+                            export MINIKUBE_WANTUPDATENOTIFICATION=false
+                            export MINIKUBE_WANTREPORTERRORPROMPT=false
+                            export MINIKUBE_HOME=$HOME
+                            export CHANGE_MINIKUBE_NONE_USER=true
+                            export KUBECONFIG=$HOME/.kube/config
+                            export DOCKER_CONFIG=$HOME/.docker
+                            mkdir -p $HOME/.kube $HOME/.minikube
+                            touch $KUBECONFIG
+                            sudo -E /usr/local/bin/minikube start --vm-driver=none --cups 4 --memory 12288 --logtostderr
+                        """
+                    }
+                }
+
+                stage('Download test image') { // for display purposes
+                    steps{
+                        sh "docker pull eclipse/che-e2e:nightly"
+                        sh "sudo rm -rf \${WORKSPACE}/che/e2e/report/"
+                        sh "rm -rf \${WORKSPACE}/oc-logs/"
+                    }
+                }
+                stage("Prepare chectl") {
+                    steps{
+                        checkout([$class: 'GitSCM', 
+                            branches: [[name: '*/master']], 
+                            doGenerateSubmoduleConfigurations: false, 
+                            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'chectl']], 
+                            submoduleCfg: [], 
+                            userRemoteConfigs: [[url: 'https://github.com/che-incubator/chectl.git']]]
+                        )
+                        sh ''' 
+                            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+                            . ~/.bashrc
+                            nvm install 10.16.0
+                            node --version
+                            cd chectl
+                            npm install yarn
+                            node_modules/yarn/bin/yarn
+                            ${WORKSPACE}/chectl/bin/run version
+                        '''
+                    }
+                }
+                stage("Download oc & login"){
+                    steps{
+                        sh '''
+                            curl https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.1.7/openshift-client-linux-4.1.7.tar.gz --output oc.tar.gz
+                            ls -la
+                            tar -xvf oc.tar.gz
+                            sudo cp ./oc /usr/bin/oc
+                            # oc login https://api.crw.codereadyqe.com:6443 --insecure-skip-tls-verify -u kubeadmin -p 93EkA-AvFkn-x92YV-gi5jJ
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Start server') {
+            steps{
+                sh """
+                    . ~/.bashrc
+                    echo NAMESPACE=che >> \${WORKSPACE}/varsFile
+                    . \${WORKSPACE}/varsFile
+                    \${WORKSPACE}/chectl/bin/run server:start -a operator -p minikube
+                    oc project \${NAMESPACE}
+                    mkdir -p \${WORKSPACE}/oc-logs
+                    oc get events > \${WORKSPACE}/oc-logs/events.txt
+                    oc get events -o yaml -w > \${WORKSPACE}/oc-logs/events.yaml &
+                """
+            }
+        }
+        stage("Before test"){
+            parallel{
+                // stage("Patch CM & restar
+                //             echo "${env.CREDENTIALS_JSON}"
+                //             sh "echo $CREDENTIALS_JSON" che"){
+                //     steps{
+                //         sh """
+                //             oc patch configmap custom -p '{"data": {"CHE_INFRA_KUBERNETES_WORKSPACE__UNRECOVERABLE__EVENTS": "FailedMount,MountVolume.SetUp failed,Failed to pull image"}}'
+                //             oc get pods -l component=che -o jsonpath='{.items[0].metadata.name}' | xargs oc delete pod
+                //             sleep 20 #wait for che to restart
+                //         """
+                //     }
+                // }
+                stage('Create user'){
+                    steps{
+                        sh """
+                            set -x
+                            . \${WORKSPACE}/varsFile
+                            echo "Namespace: \${NAMESPACE}"
+                            
+                            KEYCLOAK_URL=\$(oc get route/keycloak -o jsonpath='{.spec.host}')
+                            KEYCLOAK_BASE_URL="http://\${KEYCLOAK_URL}/auth"
+                            
+                            ADMIN_USERNAME=admin
+                            ADMIN_PASS=admin
+                            TEST_USERNAME=testUser1
+
+                            echo "Getting admin token"
+                            ADMIN_ACCESS_TOKEN=\$(curl -X POST \$KEYCLOAK_BASE_URL/realms/master/protocol/openid-connect/token -H "Content-Type: application/x-www-form-urlencoded" -d "username=admin" -d "password=admin" -d "grant_type=password" -d "client_id=admin-cli" |jq -r .access_token)
+
+                            echo \$ADMIN_ACCESS_TOKEN
+
+                            echo "Creating user"
+
+                            USER_JSON="{\\"username\\": \\"\${TEST_USERNAME}\\",\\"enabled\\": true,\\"emailVerified\\": true,\\"email\\":\\"test1@user.aa\\"}"
+                            
+                            echo \$USER_JSON
+
+                            curl -X POST \$KEYCLOAK_BASE_URL/admin/realms/che/users -H "Authorization: Bearer \${ADMIN_ACCESS_TOKEN}" -H "Content-Type: application/json" -d "\${USER_JSON}" -v
+
+                            USER_ID=\$(curl -X GET \$KEYCLOAK_BASE_URL/admin/realms/che/users?username=\${TEST_USERNAME} -H "Authorization: Bearer \${ADMIN_ACCESS_TOKEN}" | jq -r .[0].id)
+                            echo "User id: \$USER_ID"
+
+                            echo "Updating password"
+
+                            CREDENTIALS_JSON={\\"type\\":\\"password\\",\\"value\\":\\"\${TEST_USERNAME}\\",\\"temporary\\":false}
+                            echo \$CREDENTIALS_JSON
+
+                            curl -X PUT \$KEYCLOAK_BASE_URL/admin/realms/che/users/\${USER_ID}/reset-password -H "Authorization: Bearer \${ADMIN_ACCESS_TOKEN}" -H "Content-Type: application/json" -d "\${CREDENTIALS_JSON}" -v
+
+                            export USER_ACCESS_TOKEN=\$(curl -X POST \$KEYCLOAK_BASE_URL/realms/che/protocol/openid-connect/token -H "Content-Type: application/x-www-form-urlencoded" -d "username=\${TEST_USERNAME}" -d "password=\${TEST_USERNAME}" -d "grant_type=password" -d "client_id=che-public" |jq -r .access_token)
+                            echo "USER_ACCESS_TOKEN=\$USER_ACCESS_TOKEN" >> \${WORKSPACE}/varsFile
+                        """
+                    }
+                }
+            }
+        }
+        stage('Start workspace'){
+            steps{
+                sh """
+                    . ~/.bashrc
+                    . \${WORKSPACE}/varsFile
+                    \${WORKSPACE}/chectl/bin/run workspace:start --access-token "\${USER_ACCESS_TOKEN}" -n \${NAMESPACE}  -f https://raw.githubusercontent.com/eclipse/che/master/e2e/files/happy-path/happy-path-workspace.yaml
+                """
+            }
+        }
+
+        stage("Run test") {
+            steps{
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: '*/multiuser']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'che']], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[url: 'https://github.com/rhopp/che.git']]]
+                )
+                sh """
+                    . \${WORKSPACE}/varsFile
+                    CHE_HOST=\$(oc get route/che -o jsonpath='{.spec.host}')
+                    CHE_URL=http://\${CHE_HOST}
+                    docker run --shm-size=256m -v \${WORKSPACE}/che/e2e:/root/local_tests:Z \\
+                        -e TS_SELENIUM_BASE_URL=\${CHE_URL} \\
+                        -e TS_SELENIUM_MULTIUSER="true" \\
+                        -e TS_SELENIUM_USERNAME="testUser1" \\
+                        -e TS_SELENIUM_PASSWORD="testUser1" \\
+                        -e TS_SELENIUM_LOAD_PAGE_TIMEOUT=300000 \\
+                        eclipse/che-e2e:nightly
+                """
+            }
+        }
+    }
+    post{
+        always{
+            archiveArtifacts artifacts:'che/e2e/report/**'
+            archiveArtifacts artifacts:'oc-logs/**'
+            sh """
+                . \${WORKSPACE}/varsFile
+                oc delete project \${NAMESPACE}
+            """
+        }
+    }
+}
