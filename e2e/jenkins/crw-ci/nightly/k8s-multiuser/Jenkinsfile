@@ -103,7 +103,7 @@ pipeline {
                             echo "Namespace: \${NAMESPACE}"
                             
                             #KEYCLOAK_URL=\$(oc get route/keycloak -o jsonpath='{.spec.host}')
-                            KEYCLOAK_URL=\$(oc get ingress/che -n che -o jsonpath='{.spec.rules[0].host}')
+                            KEYCLOAK_URL=\$(oc get ingress/keycloak -n che -o jsonpath='{.spec.rules[0].host}')
                             KEYCLOAK_BASE_URL="http://\${KEYCLOAK_URL}/auth"
                             
                             ADMIN_USERNAME=admin
