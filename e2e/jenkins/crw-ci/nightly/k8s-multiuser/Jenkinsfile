@@ -9,6 +9,8 @@ pipeline {
                 stage("Start minikube"){
                     steps{
                         sh """
+                            set -x
+                            echo Test!
                             sudo setenforce 0
                             sudo systemctl stop firewalld
                             export MINIKUBE_WANTUPDATENOTIFICATION=false
@@ -20,6 +22,7 @@ pipeline {
                             mkdir -p \${HOME}/.kube \${HOME}/.minikube
                             touch \${KUBECONFIG}
                             sudo -E /usr/local/bin/minikube start --vm-driver=none --cups 4 --memory 12288 --logtostderr
+                            set +x
                         """
                     }
                 }
