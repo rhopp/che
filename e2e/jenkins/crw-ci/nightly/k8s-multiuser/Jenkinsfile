@@ -21,7 +21,7 @@ pipeline {
                             export DOCKER_CONFIG=\${HOME}/.docker
                             mkdir -p \${HOME}/.kube \${HOME}/.minikube
                             touch \${KUBECONFIG}
-                            sudo -E /usr/local/bin/minikube start --vm-driver=none --cups 4 --memory 12288 --logtostderr
+                            sudo -E /usr/local/bin/minikube start --vm-driver=none --cpus 4 --memory 12288 --logtostderr
                             # set +x
                         """
                     }
