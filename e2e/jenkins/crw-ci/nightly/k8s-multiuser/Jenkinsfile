@@ -29,7 +29,7 @@ pipeline {
 
                 stage('Download test image') { // for display purposes
                     steps{
-                        sh "docker pull eclipse/che-e2e:nightly"
+                        // sh "docker pull eclipse/che-e2e:nightly"
                         sh "sudo rm -rf \${WORKSPACE}/che/e2e/report/"
                         sh "rm -rf \${WORKSPACE}/oc-logs/"
                     }
