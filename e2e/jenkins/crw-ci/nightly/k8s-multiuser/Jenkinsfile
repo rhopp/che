@@ -165,7 +165,7 @@ pipeline {
                     . \${WORKSPACE}/varsFile
                     CHE_HOST=\$(oc get ingress/che -o jsonpath='{.spec.rules[0].host}')
                     CHE_URL=http://\${CHE_HOST}
-                    docker run --shm-size=256m -v \${WORKSPACE}/che/e2e:/root/local_tests:Z \\
+                    docker run --shm-size=256m -v \${WORKSPACE}/che/e2e:/tmp/e2e:Z \\
                         -e TS_SELENIUM_BASE_URL=\${CHE_URL} \\
                         -e TS_SELENIUM_MULTIUSER="true" \\
                         -e TS_SELENIUM_USERNAME="testUser1" \\
