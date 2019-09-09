@@ -49,6 +49,10 @@ pipeline {
                             nvm install 10.16.0
                             node --version
                             cd chectl
+
+                            # use internal package mirror:
+                            sed -i "s|https://registry.yarnpkg.com/|https://repository.engineering.redhat.com/nexus/repository/registry.npmjs.org/|g" ${WORKSPACE}/chectl/yarn.lock
+
                             npm install yarn
                             node_modules/yarn/bin/yarn
                             ${WORKSPACE}/chectl/bin/run version
