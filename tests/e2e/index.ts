@@ -1,7 +1,5 @@
 import * as inversifyConfig from './inversify.config';
-import * as commonTestMethods from './tests/CommonTestMethods';
-import * as commonLSTests from './tests/CommonLSTests';
-export { inversifyConfig, commonTestMethods, commonLSTests };
+export { inversifyConfig };
 export * from './inversify.types';
 export * from './TestConstants';
 export * from './tests/CommonTestMethods';
