@@ -8,9 +8,9 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { TestConstants, DriverHelper, CLASSES, ICheLoginPage, TYPES } from '../..';
-import { e2eContainer } from '../../inversify.config';
+import { E2EContainerSingleton, TestConstants, DriverHelper, CLASSES, ICheLoginPage, TYPES } from '../..';
 
+const e2eContainer = E2EContainerSingleton.getInstance();
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);
 const loginPage: ICheLoginPage = e2eContainer.get<ICheLoginPage>(TYPES.CheLogin);
 

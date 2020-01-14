@@ -1,5 +1,4 @@
-import * as inversifyConfig from './inversify.config';
-export { inversifyConfig };
+export * from './inversify.config';
 export * from './inversify.types';
 export * from './TestConstants';
 export * from './tests/CommonTestMethods';

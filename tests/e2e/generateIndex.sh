@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 echo "Generating index.ts file..."
-echo "import * as inversifyConfig from './inversify.config';
-export { inversifyConfig };
+echo "export * from './inversify.config';
 export * from './inversify.types';
 export * from './TestConstants';
 export * from './tests/CommonTestMethods';

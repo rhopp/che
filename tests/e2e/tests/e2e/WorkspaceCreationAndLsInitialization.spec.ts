@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { e2eContainer } from '../../inversify.config';
+import { E2EContainerSingleton } from '../../';
 import { TYPES, CLASSES } from '../../inversify.types';
 import { ICheLoginPage } from '../../pageobjects/login/ICheLoginPage';
 import { Dashboard } from '../../pageobjects/dashboard/Dashboard';
@@ -24,6 +24,7 @@ const sampleName: string = 'console-java-simple';
 const fileFolderPath: string = `${sampleName}/src/main/java/org/eclipse/che/examples`;
 const tabTitle: string = 'HelloWorld.java';
 
+const e2eContainer = E2EContainerSingleton.getInstance();
 const loginPage: ICheLoginPage = e2eContainer.get<ICheLoginPage>(TYPES.CheLogin);
 const dashboard: Dashboard = e2eContainer.get(CLASSES.Dashboard);
 const newWorkspace: NewWorkspace = e2eContainer.get(CLASSES.NewWorkspace);

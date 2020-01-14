@@ -8,10 +8,11 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { e2eContainer } from '../inversify.config';
+import { E2EContainerSingleton } from '..';
 import { Editor, CLASSES, Ide } from '..';
 import { Key } from 'selenium-webdriver';
 
+const e2eContainer = E2EContainerSingleton.getInstance();
 const editor: Editor = e2eContainer.get(CLASSES.Editor);
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
 

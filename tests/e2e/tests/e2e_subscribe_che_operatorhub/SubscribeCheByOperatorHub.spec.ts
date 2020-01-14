@@ -8,13 +8,14 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { e2eContainer } from '../../inversify.config';
+import { E2EContainerSingleton } from '../../inversify.config';
 import { IOcpLoginPage } from '../../pageobjects/login/IOcpLoginPage';
 import { CLASSES, TYPES } from '../../inversify.types';
 import { OcpLoginPage } from '../../pageobjects/openshift/OcpLoginPage';
 import { OcpWebConsolePage } from '../../pageobjects/openshift/OcpWebConsolePage';
 import { TestConstants } from '../../TestConstants';
 
+const e2eContainer = E2EContainerSingleton.getInstance();
 const ocpLogin: IOcpLoginPage = e2eContainer.get<IOcpLoginPage>(TYPES.OcpLogin);
 const ocpLoginPage: OcpLoginPage = e2eContainer.get(CLASSES.OcpLoginPage);
 const ocpWebConsole: OcpWebConsolePage = e2eContainer.get(CLASSES.OcpWebConsolePage);

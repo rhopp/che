@@ -10,8 +10,18 @@
 import * as path from 'path';
 import { Container } from 'inversify';
 
-let pathh = path.resolve('.');
-let containerInitializer = require(`${pathh}/dist/driver/ContainerInitializer.js`);
-let e2eContainer : Container = containerInitializer.getContainer();
+export class E2EContainerSingleton {
+    private static e2eContainer: Container;
 
-export { e2eContainer };
+    public static getInstance(): Container {
+        if (!E2EContainerSingleton.e2eContainer) {
+            let pathh = path.resolve('.');
+            let containerInitializer = require(`${pathh}/dist/driver/ContainerInitializer.js`);
+            E2EContainerSingleton.e2eContainer = containerInitializer.getContainer();
+        }
+
+        return E2EContainerSingleton.e2eContainer;
+    }
+
+    private constructor() { }
+}

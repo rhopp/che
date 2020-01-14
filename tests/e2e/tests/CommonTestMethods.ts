@@ -8,10 +8,10 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { NewWorkspace, CLASSES, Ide, ProjectTree, TestConstants, QuickOpenContainer, Terminal, TopMenu, Dashboard, Editor } from '..';
-import { e2eContainer } from '../inversify.config';
+import { NewWorkspace, CLASSES, Ide, ProjectTree, TestConstants, QuickOpenContainer, Terminal, TopMenu, Dashboard, Editor, PreferencesHandler, E2EContainerSingleton } from '..';
 import { error } from 'selenium-webdriver';
 
+const e2eContainer = E2EContainerSingleton.getInstance();
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
 const projectTree: ProjectTree = e2eContainer.get(CLASSES.ProjectTree);
 const namespace: string = TestConstants.TS_SELENIUM_USERNAME;
@@ -21,6 +21,7 @@ const topMenu: TopMenu = e2eContainer.get(CLASSES.TopMenu);
 const dashboard: Dashboard = e2eContainer.get(CLASSES.Dashboard);
 const editor: Editor = e2eContainer.get(CLASSES.Editor);
 const newWorkspace: NewWorkspace = e2eContainer.get(CLASSES.NewWorkspace);
+const preferencesHandler: PreferencesHandler = e2eContainer.get(CLASSES.PreferencesHandler);
 
 export function createAndOpenWorkspace(workspaceName : string, stack: string) {
     suite('Create ' + stack + ' workspace ' + workspaceName, async () => {
@@ -81,6 +82,13 @@ export function openFileInAssociatedWorkspace(filePath: string, fileName: string
         await projectTree.expandPathAndOpenFileInAssociatedWorkspace(filePath, fileName);
         await editor.selectTab(fileName);
     });
+}
+
+export async function setTerminalToDom() {
+    let isDom: boolean = await preferencesHandler.isTerminalSetToDom();
+    if (!isDom) {
+        preferencesHandler.setTerminalToDom();
+    }
 }
 
 async function runTask(task: string) {

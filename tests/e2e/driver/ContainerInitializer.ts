@@ -43,6 +43,8 @@ import { ContextMenu } from '../pageobjects/ide/ContextMenu';
 import { ITestWorkspaceUtil } from '..';
 import { CheLoginPage } from '../pageobjects/openshift/CheLoginPage';
 import { RegularUserOcpCheLoginPage } from '../pageobjects/login/RegularUserOcpCheLoginPage';
+import { PreferencesHandler } from '../utils/PreferencesHandler';
+import { RequestHandler } from '../utils/RequestHandler';
 
 export function getContainer(): Container {
     const e2eContainer = new Container();
@@ -84,5 +86,7 @@ export function getContainer(): Container {
     e2eContainer.bind<OcpWebConsolePage>(CLASSES.OcpWebConsolePage).to(OcpWebConsolePage).inSingletonScope();
     e2eContainer.bind<OpenWorkspaceWidget>(CLASSES.OpenWorkspaceWidget).to(OpenWorkspaceWidget).inSingletonScope();
     e2eContainer.bind<CheLoginPage>(CLASSES.CheLoginPage).to(CheLoginPage).inSingletonScope();
+    e2eContainer.bind<PreferencesHandler>(CLASSES.PreferencesHandler).to(PreferencesHandler).inSingletonScope();
+    e2eContainer.bind<RequestHandler>(CLASSES.RequestHandler).to(RequestHandler).inSingletonScope();
     return e2eContainer;
 }

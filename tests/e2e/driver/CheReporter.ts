@@ -9,8 +9,7 @@
  **********************************************************************/
 import * as mocha from 'mocha';
 import { IDriver } from './IDriver';
-import { inversifyConfig } from '..';
-import { TYPES, CLASSES } from '..';
+import { TYPES, CLASSES, E2EContainerSingleton } from '..';
 import * as fs from 'fs';
 import * as rm from 'rimraf';
 import { TestConstants } from '../TestConstants';
@@ -19,15 +18,16 @@ import { DriverHelper } from '../utils/DriverHelper';
 import { ScreenCatcher } from '../utils/ScreenCatcher';
 import { ITestWorkspaceUtil } from '../utils/workspace/ITestWorkspaceUtil';
 
-const e2eContainer = inversifyConfig.e2eContainer;
-const driver: IDriver = e2eContainer.get(TYPES.Driver);
-const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);
-const screenCatcher: ScreenCatcher = e2eContainer.get(CLASSES.ScreenCatcher);
-let methodIndex: number = 0;
-let deleteScreencast: boolean = true;
-let testWorkspaceUtil: ITestWorkspaceUtil = e2eContainer.get(TYPES.WorkspaceUtil);
-
 class CheReporter extends mocha.reporters.Spec {
+
+  e2eContainer = E2EContainerSingleton.getInstance();
+  driver: IDriver = this.e2eContainer.get(TYPES.Driver);
+  driverHelper: DriverHelper = this.e2eContainer.get(CLASSES.DriverHelper);
+  screenCatcher: ScreenCatcher = this.e2eContainer.get(CLASSES.ScreenCatcher);
+  methodIndex: number = 0;
+  deleteScreencast: boolean = true;
+  testWorkspaceUtil: ITestWorkspaceUtil = this.e2eContainer.get(TYPES.WorkspaceUtil);
+
   constructor(runner: mocha.Runner, options: mocha.MochaOptions) {
     super(runner, options);
 
@@ -67,20 +67,20 @@ class CheReporter extends mocha.reporters.Spec {
       rm.sync(TestConstants.TS_SELENIUM_REPORT_FOLDER);
     });
 
-    runner.on('test', async function (test: mocha.Test) {
+    runner.on('test', async (test: mocha.Test) => {
       if (!TestConstants.TS_SELENIUM_EXECUTION_SCREENCAST) {
         return;
       }
 
-      methodIndex = methodIndex + 1;
-      const currentMethodIndex: number = methodIndex;
+      this.methodIndex = this.methodIndex + 1;
+      const currentMethodIndex: number = this.methodIndex;
       let iterationIndex: number = 1;
 
       while (!(test.state === 'passed' || test.state === 'failed')) {
-        await screenCatcher.catchMethodScreen(test.title, currentMethodIndex, iterationIndex);
+        await this.screenCatcher.catchMethodScreen(test.title, currentMethodIndex, iterationIndex);
         iterationIndex = iterationIndex + 1;
 
-        await driverHelper.wait(TestConstants.TS_SELENIUM_DELAY_BETWEEN_SCREENSHOTS);
+        await this.driverHelper.wait(TestConstants.TS_SELENIUM_DELAY_BETWEEN_SCREENSHOTS);
       }
     });
 
@@ -97,22 +97,22 @@ class CheReporter extends mocha.reporters.Spec {
       });
 
 
-    runner.on('end', async function (test: mocha.Test) {
+    runner.on('end', async (test: mocha.Test) => {
       // ensure that fired events done
-      await driver.get().sleep(5000);
+      await this.driver.get().sleep(5000);
 
       // close driver
-      await driver.get().quit();
+      await this.driver.get().quit();
 
       // delete screencast folder if conditions matched
-      if (deleteScreencast && TestConstants.DELETE_SCREENCAST_IF_TEST_PASS) {
+      if (this.deleteScreencast && TestConstants.DELETE_SCREENCAST_IF_TEST_PASS) {
         rm.sync(TestConstants.TS_SELENIUM_REPORT_FOLDER);
       }
     });
 
-    runner.on('fail', async function (test: mocha.Test) {
+    runner.on('fail', async (test: mocha.Test) => {
       // raise flag for keeping the screencast
-      deleteScreencast = false;
+      this.deleteScreencast = false;
 
       const testFullTitle: string = test.fullTitle().replace(/\s/g, '_');
       const testTitle: string = test.title.replace(/\s/g, '_');
@@ -138,19 +138,19 @@ class CheReporter extends mocha.reporters.Spec {
       }
 
       // take screenshot and write to file
-      const screenshot: string = await driver.get().takeScreenshot();
+      const screenshot: string = await this.driver.get().takeScreenshot();
       const screenshotStream = fs.createWriteStream(screenshotFileName);
       screenshotStream.write(new Buffer(screenshot, 'base64'));
       screenshotStream.end();
 
       // take pagesource and write to file
-      const pageSource: string = await driver.get().getPageSource();
+      const pageSource: string = await this.driver.get().getPageSource();
       const pageSourceStream = fs.createWriteStream(pageSourceFileName);
       pageSourceStream.write(new Buffer(pageSource));
       pageSourceStream.end();
 
       // take browser console logs and write to file
-      const browserLogsEntries: logging.Entry[] = await driverHelper.getDriver().manage().logs().get('browser');
+      const browserLogsEntries: logging.Entry[] = await this.driverHelper.getDriver().manage().logs().get('browser');
       let browserLogs: string = '';
 
       browserLogsEntries.forEach(log => {
@@ -164,7 +164,7 @@ class CheReporter extends mocha.reporters.Spec {
       // stop and remove running workspace
       if (TestConstants.DELETE_WORKSPACE_ON_FAILED_TEST) {
         console.log('Property DELETE_WORKSPACE_ON_FAILED_TEST se to true - trying to stop and delete running workspace.');
-        testWorkspaceUtil.cleanUpAllWorkspaces();
+        this.testWorkspaceUtil.cleanUpAllWorkspaces();
       }
 
     });
