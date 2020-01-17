@@ -1,9 +1,10 @@
-import { TestConstants, RequestType } from '..';
 import axios from 'axios';
 import querystring from 'querystring';
+import { RequestType } from './RequestType';
+import { TestConstants } from '../TestConstants';
 
 export class RequestHandler {
-    async processRequest(reqType: RequestType, url: string) {
+    public async processRequest(reqType: RequestType, url: string) {
         let response;
         // maybe this check can be moved somewhere else at the begining so it will be executed just once
         if (TestConstants.TS_SELENIUM_MULTIUSER === true) {

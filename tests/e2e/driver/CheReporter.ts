@@ -9,7 +9,6 @@
  **********************************************************************/
 import * as mocha from 'mocha';
 import { IDriver } from './IDriver';
-import { TYPES, CLASSES, E2EContainerSingleton } from '..';
 import * as fs from 'fs';
 import * as rm from 'rimraf';
 import { TestConstants } from '../TestConstants';
@@ -17,6 +16,8 @@ import { logging } from 'selenium-webdriver';
 import { DriverHelper } from '../utils/DriverHelper';
 import { ScreenCatcher } from '../utils/ScreenCatcher';
 import { ITestWorkspaceUtil } from '../utils/workspace/ITestWorkspaceUtil';
+import { E2EContainerSingleton } from '../inversify.config';
+import { TYPES, CLASSES } from '../inversify.types';
 
 class CheReporter extends mocha.reporters.Spec {
 

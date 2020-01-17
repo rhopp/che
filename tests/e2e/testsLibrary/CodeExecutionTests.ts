@@ -9,8 +9,10 @@
  **********************************************************************/
 
 import { CLASSES, Terminal, TopMenu, Ide } from '..';
-import { e2eContainer } from '../inversify.config';
+import { E2EContainerSingleton } from '../inversify.config';
+import { Container } from 'inversify';
 
+const e2eContainer: Container = E2EContainerSingleton.getInstance();
 const terminal: Terminal = e2eContainer.get(CLASSES.Terminal);
 const topMenu: TopMenu = e2eContainer.get(CLASSES.TopMenu);
 const ide: Ide = e2eContainer.get(CLASSES.Ide);

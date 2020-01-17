@@ -8,11 +8,11 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 import 'reflect-metadata';
-import { NameGenerator} from '../..';
 import * as projectAndFileTests from '../../testsLibrary/ProjectAndFileTests';
 import * as commonLsTests from '../../testsLibrary/LsTests';
 import * as workspaceHandling from '../../testsLibrary/WorksapceHandlingTests';
 import * as codeExecutionTests from '../../testsLibrary/CodeExecutionTests';
+import { NameGenerator } from '../../utils/NameGenerator';
 
 const workspaceName: string = NameGenerator.generate('wksp-test-', 5);
 const sampleName: string = 'console-java-simple';

@@ -8,9 +8,15 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { CLASSES, Ide, ProjectTree, TestConstants, Editor } from '..';
-import { e2eContainer } from '../inversify.config';
+import { E2EContainerSingleton } from '../inversify.config';
+import { Container } from 'inversify';
+import { Ide } from '../pageobjects/ide/Ide';
+import { CLASSES } from '../inversify.types';
+import { ProjectTree } from '../pageobjects/ide/ProjectTree';
+import { TestConstants } from '../TestConstants';
+import { Editor } from '../pageobjects/ide/Editor';
 
+const e2eContainer: Container = E2EContainerSingleton.getInstance();
 const ide: Ide = e2eContainer.get(CLASSES.Ide);
 const projectTree: ProjectTree = e2eContainer.get(CLASSES.ProjectTree);
 const namespace: string = TestConstants.TS_SELENIUM_USERNAME;

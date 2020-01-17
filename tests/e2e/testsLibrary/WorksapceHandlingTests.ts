@@ -9,8 +9,9 @@
  **********************************************************************/
 
 import { NewWorkspace, CLASSES, Dashboard } from '..';
-import { e2eContainer } from '../inversify.config';
+import { E2EContainerSingleton } from '../inversify.config';
 
+const e2eContainer = E2EContainerSingleton.getInstance();
 const dashboard: Dashboard = e2eContainer.get(CLASSES.Dashboard);
 const newWorkspace: NewWorkspace = e2eContainer.get(CLASSES.NewWorkspace);
 

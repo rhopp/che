@@ -4,8 +4,6 @@ echo "Generating index.ts file..."
 echo "export * from './inversify.config';
 export * from './inversify.types';
 export * from './TestConstants';
-export * from './tests/CommonTestMethods';
-export * from './tests/CommonLSTests';
 " > index.ts
 
 listOfDirs="driver utils pageobjects testsLibrary"
