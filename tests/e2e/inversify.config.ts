@@ -17,7 +17,7 @@ export class E2EContainerSingleton {
         if (!E2EContainerSingleton.e2eContainer) {
             let pathh = path.resolve('.');
             let ContainerInitializer = require(`${pathh}/dist/driver/ContainerInitializer.js`);
-            E2EContainerSingleton.e2eContainer = ContainerInitializer.gettt();
+            E2EContainerSingleton.e2eContainer = ContainerInitializer.getContainer();
         }
 
         return E2EContainerSingleton.e2eContainer;
