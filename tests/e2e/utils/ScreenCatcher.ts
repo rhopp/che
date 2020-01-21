@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import { injectable, inject } from 'inversify';
 import { CLASSES } from '../inversify.types';
 import { DriverHelper } from './DriverHelper';
-import { TestConstants } from '..';
+import { TestConstants } from '../TestConstants';
 
 @injectable()
 export class ScreenCatcher {

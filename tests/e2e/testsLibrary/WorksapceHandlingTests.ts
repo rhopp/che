@@ -8,8 +8,10 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { NewWorkspace, CLASSES, Dashboard } from '..';
 import { E2EContainerSingleton } from '../inversify.config';
+import { Dashboard } from '../pageobjects/dashboard/Dashboard';
+import { CLASSES } from '../inversify.types';
+import { NewWorkspace } from '../pageobjects/dashboard/NewWorkspace';
 
 const e2eContainer = E2EContainerSingleton.getInstance();
 const dashboard: Dashboard = e2eContainer.get(CLASSES.Dashboard);

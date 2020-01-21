@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+exit 0
 echo "Generating index.ts file..."
 echo "export * from './inversify.config';
 export * from './inversify.types';

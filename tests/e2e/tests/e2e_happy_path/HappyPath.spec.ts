@@ -8,7 +8,6 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { E2EContainerSingleton } from '../../';
 import { DriverHelper } from '../../utils/DriverHelper';
 import { TYPES, CLASSES } from '../../inversify.types';
 import { Ide, RightToolbarButton } from '../../pageobjects/ide/Ide';
@@ -25,6 +24,7 @@ import { Terminal } from '../../pageobjects/ide/Terminal';
 import { ICheLoginPage } from '../../pageobjects/login/ICheLoginPage';
 import * as fs from 'fs';
 import { ContextMenu } from '../../pageobjects/ide/ContextMenu';
+import { E2EContainerSingleton } from '../../inversify.config';
 
 const e2eContainer = E2EContainerSingleton.getInstance();
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);

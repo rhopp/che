@@ -9,8 +9,15 @@
  **********************************************************************/
 
 import { injectable, inject } from 'inversify';
-import { ITestWorkspaceUtil, E2EContainerSingleton, TestConstants, RequestHandler, CLASSES, DriverHelper, WorkspaceStatus, RequestType } from '../..';
 import { error } from 'selenium-webdriver';
+import { ITestWorkspaceUtil } from './ITestWorkspaceUtil';
+import { E2EContainerSingleton } from '../../inversify.config';
+import { TestConstants } from '../../TestConstants';
+import { RequestHandler } from '../RequestHandler';
+import { CLASSES } from '../../inversify.types';
+import { DriverHelper } from '../DriverHelper';
+import { WorkspaceStatus } from './WorkspaceStatus';
+import { RequestType } from '../RequestType';
 
 
 @injectable()

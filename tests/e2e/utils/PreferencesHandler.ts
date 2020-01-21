@@ -1,8 +1,8 @@
-import { E2EContainerSingleton } from "../inversify.config";
-import { RequestHandler } from "./RequestHandler";
-import { CLASSES } from "../inversify.types";
-import { RequestType } from "./RequestType";
-import { TestConstants } from "../TestConstants";
+import { E2EContainerSingleton } from '../inversify.config';
+import { RequestHandler } from './RequestHandler';
+import { CLASSES } from '../inversify.types';
+import { RequestType } from './RequestType';
+import { TestConstants } from '../TestConstants';
 
 const e2eContainer = E2EContainerSingleton.getInstance();
 

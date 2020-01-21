@@ -16,8 +16,8 @@ export class E2EContainerSingleton {
     public static getInstance(): Container {
         if (!E2EContainerSingleton.e2eContainer) {
             let pathh = path.resolve('.');
-            let containerInitializer = require(`${pathh}/dist/driver/ContainerInitializer.js`);
-            E2EContainerSingleton.e2eContainer = containerInitializer.getContainer();
+            let ContainerInitializer = require(`${pathh}/dist/driver/ContainerInitializer.js`);
+            E2EContainerSingleton.e2eContainer = ContainerInitializer.gettt();
         }
 
         return E2EContainerSingleton.e2eContainer;

@@ -16,8 +16,10 @@ import 'reflect-metadata';
 import { Dashboard } from './Dashboard';
 import { Workspaces } from './Workspaces';
 import { WorkspaceDetails } from './workspace-details/WorkspaceDetails';
-import { ITestWorkspaceUtil, Ide, WorkspaceStatus } from '../..';
 import { Logger } from '../../utils/Logger';
+import { ITestWorkspaceUtil } from '../../utils/workspace/ITestWorkspaceUtil';
+import { Ide } from '../ide/Ide';
+import { WorkspaceStatus } from '../../utils/workspace/WorkspaceStatus';
 
 
 @injectable()

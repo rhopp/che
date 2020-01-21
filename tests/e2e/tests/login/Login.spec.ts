@@ -1,3 +1,13 @@
+import { E2EContainerSingleton } from '../../inversify.config';
+
+import { DriverHelper } from '../../utils/DriverHelper';
+
+import { CLASSES, TYPES } from '../../inversify.types';
+
+import { ICheLoginPage } from '../../pageobjects/login/ICheLoginPage';
+
+import { TestConstants } from '../../TestConstants';
+
 /*********************************************************************
  * Copyright (c) 2019 Red Hat, Inc.
  *
@@ -8,7 +18,6 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { E2EContainerSingleton, TestConstants, DriverHelper, CLASSES, ICheLoginPage, TYPES } from '../..';
 
 const e2eContainer = E2EContainerSingleton.getInstance();
 const driverHelper: DriverHelper = e2eContainer.get(CLASSES.DriverHelper);

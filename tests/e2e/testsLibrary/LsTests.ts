@@ -9,8 +9,10 @@
  **********************************************************************/
 
 import { E2EContainerSingleton } from '../inversify.config';
-import { Editor, CLASSES, Ide } from '..';
 import { Key } from 'selenium-webdriver';
+import { Editor } from '../pageobjects/ide/Editor';
+import { CLASSES } from '../inversify.types';
+import { Ide } from '../pageobjects/ide/Ide';
 
 const e2eContainer = E2EContainerSingleton.getInstance();
 const editor: Editor = e2eContainer.get(CLASSES.Editor);

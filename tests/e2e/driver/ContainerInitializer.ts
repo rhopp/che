@@ -40,11 +40,11 @@ import { OcpWebConsolePage } from '../pageobjects/openshift/OcpWebConsolePage';
 import { OcpLoginByTempAdmin } from '../pageobjects/login/OcpLoginByTempAdmin';
 import { OpenWorkspaceWidget } from '../pageobjects/ide/OpenWorkspaceWidget';
 import { ContextMenu } from '../pageobjects/ide/ContextMenu';
-import { ITestWorkspaceUtil } from '..';
 import { CheLoginPage } from '../pageobjects/openshift/CheLoginPage';
 import { RegularUserOcpCheLoginPage } from '../pageobjects/login/RegularUserOcpCheLoginPage';
 import { PreferencesHandler } from '../utils/PreferencesHandler';
 import { RequestHandler } from '../utils/RequestHandler';
+import { ITestWorkspaceUtil } from '../utils/workspace/ITestWorkspaceUtil';
 
 export function getContainer(): Container {
     const e2eContainer = new Container();

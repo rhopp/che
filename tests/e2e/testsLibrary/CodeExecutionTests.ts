@@ -8,9 +8,12 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { CLASSES, Terminal, TopMenu, Ide } from '..';
 import { E2EContainerSingleton } from '../inversify.config';
 import { Container } from 'inversify';
+import { Terminal } from '../pageobjects/ide/Terminal';
+import { CLASSES } from '../inversify.types';
+import { TopMenu } from '../pageobjects/ide/TopMenu';
+import { Ide } from '../pageobjects/ide/Ide';
 
 const e2eContainer: Container = E2EContainerSingleton.getInstance();
 const terminal: Terminal = e2eContainer.get(CLASSES.Terminal);
