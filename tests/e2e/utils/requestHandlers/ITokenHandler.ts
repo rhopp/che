@@ -8,15 +8,10 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { IHeaderHandler } from './IHeaderHandler';
-import { injectable } from 'inversify';
+import { AxiosRequestConfig } from "axios";
 
-@injectable()
-export class SingleUserHeaderHandler implements IHeaderHandler {
-    async getHeaders() {
-        // no headers needs to be set to single user
-        return {};
-    }
-}
-
-
+ export interface ITokenHandler{
+    
+    // Returns either empty object, or object containing Auth header.
+    getAuthHeader(): Promise<any>
+ }

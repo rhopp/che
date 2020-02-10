@@ -7,13 +7,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
+
+import { ITokenHandler } from "./ITokenHandler";
+import { injectable } from "inversify";
+import { TestConstants } from "../../TestConstants";
 import axios from 'axios';
 import querystring from 'querystring';
-import { injectable } from 'inversify';
-import { TestConstants } from '../TestConstants';
 
 @injectable()
-export class TokenHandler {
+export class KeycloakTokenHandler implements ITokenHandler {
+
+    async getAuthHeader(): Promise<any> {
+        let token = await this.getCheBearerToken();
+        return {'Authorization' : `Bearer ${token}`};
+    }
+
     async getCheBearerToken(): Promise<string> {
         let params = {};
 
@@ -37,5 +45,3 @@ export class TokenHandler {
 
     }
 }
-
-

@@ -47,10 +47,9 @@ import { CheLoginPage } from './pageobjects/openshift/CheLoginPage';
 import { NotificationCenter } from './pageobjects/ide/NotificationCenter';
 import { PreferencesHandler } from './utils/PreferencesHandler';
 import { CheApiRequestHandler } from './utils/requestHandlers/CheApiRequestHandler';
-import { IHeaderHandler } from './utils/requestHandlers/IHeaderHandler';
-import { MultiUserHeaderHandler } from './utils/requestHandlers/MultiUserHeaderHandler';
-import { SingleUserHeaderHandler } from './utils/requestHandlers/SingleUserHeaderHandler';
-import { TokenHandler } from './utils/TokenHandler';
+import { ITokenHandler } from './utils/requestHandlers/ITokenHandler';
+import { KeycloakTokenHandler } from './utils/requestHandlers/KeycloakTokenHandler';
+import { SingleUserTokenHandler } from './utils/requestHandlers/SingleUserTokenHandler';
 
 
 const e2eContainer: Container = new Container();
@@ -61,7 +60,7 @@ e2eContainer.bind<ITestWorkspaceUtil>(TYPES.WorkspaceUtil).to(TestWorkspaceUtil)
 e2eContainer.bind<IOcpLoginPage>(TYPES.OcpLogin).to(OcpLoginByTempAdmin).inSingletonScope();
 
 if (TestConstants.TS_SELENIUM_MULTIUSER) {
-    e2eContainer.bind<IHeaderHandler>(TYPES.HeaderHandler).to(MultiUserHeaderHandler).inSingletonScope();
+    e2eContainer.bind<ITokenHandler>(TYPES.HeaderHandler).to(KeycloakTokenHandler).inSingletonScope();
     if (JSON.parse(TestConstants.TS_SELENIUM_VALUE_OPENSHIFT_OAUTH)) {
         e2eContainer.bind<ICheLoginPage>(TYPES.CheLogin).to(RegularUserOcpCheLoginPage).inSingletonScope();
     } else {
@@ -69,7 +68,7 @@ if (TestConstants.TS_SELENIUM_MULTIUSER) {
     }
 } else {
     e2eContainer.bind<ICheLoginPage>(TYPES.CheLogin).to(SingleUserLoginPage).inSingletonScope();
-    e2eContainer.bind<IHeaderHandler>(TYPES.HeaderHandler).to(SingleUserHeaderHandler).inSingletonScope();
+    e2eContainer.bind<ITokenHandler>(TYPES.HeaderHandler).to(SingleUserTokenHandler).inSingletonScope();
 }
 
 e2eContainer.bind<ContextMenu>(CLASSES.ContextMenu).to(ContextMenu).inSingletonScope();
@@ -98,6 +97,5 @@ e2eContainer.bind<CheLoginPage>(CLASSES.CheLoginPage).to(CheLoginPage).inSinglet
 e2eContainer.bind<NotificationCenter>(CLASSES.NotificationCenter).to(NotificationCenter).inSingletonScope();
 e2eContainer.bind<PreferencesHandler>(CLASSES.PreferencesHandler).to(PreferencesHandler).inSingletonScope();
 e2eContainer.bind<CheApiRequestHandler>(CLASSES.CheApiRequestHandler).to(CheApiRequestHandler).inSingletonScope();
-e2eContainer.bind<TokenHandler>(CLASSES.TokenHandler).to(TokenHandler).inSingletonScope();
 
 export { e2eContainer };

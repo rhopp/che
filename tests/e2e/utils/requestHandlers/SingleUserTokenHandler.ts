@@ -8,10 +8,12 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import { AxiosRequestConfig } from 'axios';
+import { ITokenHandler } from "./ITokenHandler";
+import { injectable } from "inversify";
 
-export interface IHeaderHandler {
-    getHeaders() : Promise<AxiosRequestConfig> ;
+@injectable()
+export class SingleUserTokenHandler implements ITokenHandler {
+    async getAuthHeader(): Promise<any> {
+        return {};
+    }
 }
-
-

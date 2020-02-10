@@ -8,36 +8,42 @@
  * SPDX-License-Identifier: EPL-2.0
  **********************************************************************/
 
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { TestConstants } from '../../TestConstants';
 import { TYPES } from '../../inversify.types';
 import { inject, injectable } from 'inversify';
-import { IHeaderHandler } from './IHeaderHandler';
+import { ITokenHandler } from './ITokenHandler';
+import { Logger } from '../Logger';
 
 @injectable()
- export class CheApiRequestHandler {
+export class CheApiRequestHandler {
 
-    constructor(@inject(TYPES.HeaderHandler) private readonly headerHandler: IHeaderHandler) {
+    axiosInstance: AxiosInstance;
+
+    constructor(@inject(TYPES.TokenHandler) private readonly tokenHandler: ITokenHandler) {
+        this.axiosInstance = axios.create({
+            baseURL: `${TestConstants.TS_SELENIUM_BASE_URL}`
+        });
     }
 
-    async get(url: string) : Promise<AxiosResponse> {
-        return await axios.get(this.assembleUrl(url), await this.headerHandler.getHeaders());
+    async get(url: string, axiosRequestConfig: AxiosRequestConfig = {}): Promise<AxiosResponse> {
+        const config = await this.addAuthHeaderToAxiosConfig(axiosRequestConfig, this.tokenHandler.getAuthHeader());
+        return await this.axiosInstance.get(url, config);
     }
 
-    async post(url: string, data?: string) : Promise<AxiosResponse> {
-        if ( data === undefined ) {
-            return await axios.post(this.assembleUrl(url), await this.headerHandler.getHeaders());
-        } else {
-            return await axios.post(this.assembleUrl(url), data, await this.headerHandler.getHeaders());
-        }
+    async post(url: string, data?: string, axiosRequestConfig: AxiosRequestConfig = {}): Promise<AxiosResponse> {
+        const config = await this.addAuthHeaderToAxiosConfig(axiosRequestConfig, this.tokenHandler.getAuthHeader());
+        return await this.axiosInstance.post(url, data, config);
     }
 
-    async delete(url: string) : Promise<AxiosResponse> {
-        return await axios.delete(this.assembleUrl(url), await this.headerHandler.getHeaders());
+    async delete(url: string, axiosRequestConfig: AxiosRequestConfig = {}): Promise<AxiosResponse> {
+        const config = await this.addAuthHeaderToAxiosConfig(axiosRequestConfig, this.tokenHandler.getAuthHeader());
+        return await this.axiosInstance.delete(url, config);
     }
 
-    private assembleUrl(url: string) : string {
-        return `${TestConstants.TS_SELENIUM_BASE_URL}/${url}`;
+    private async addAuthHeaderToAxiosConfig(axiosRequestConfig: AxiosRequestConfig, authHeader: any): Promise<AxiosRequestConfig> {
+        Logger.debug(`Adding header ${authHeader} into request.`);
+        axiosRequestConfig['headers'] = { ...axiosRequestConfig['headers'], ...authHeader };
+        return axiosRequestConfig;
     }
-
- }
+}
