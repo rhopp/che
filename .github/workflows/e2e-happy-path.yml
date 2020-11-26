@@ -62,6 +62,6 @@ jobs:
     - name: Start che
       run: |
         bash <(curl -sL  https://www.eclipse.org/che/chectl/) --channel=next
-        chectl server:deploy --k8spodreadytimeout=180000 --k8spoddownloadimagetimeout=600000 --k8spodwaittimeout=600000 --installer=operator --list-renderer=verbose --platform=minishift --chenamespace=eclipse-che
+        chectl server:deploy --k8spodreadytimeout=180000 --k8spoddownloadimagetimeout=600000 --k8spodwaittimeout=600000 --installer=operator --listr-renderer=verbose --platform=minishift --chenamespace=eclipse-che
         chectl auth:login -u developer -p anything --chenamespace=eclipse-che
         chectl worksapce:create --start 
