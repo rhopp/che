@@ -1,5 +1,6 @@
 <div id="header" align="center">
 
+dummy change
 [![Eclipse Che - Eclipse Next-Generation IDE](https://raw.githubusercontent.com/eclipse/che/assets/eclipseche.png)](
 https://www.eclipse.org/che/)
 
